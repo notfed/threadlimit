@@ -10,9 +10,9 @@ class ThreadLimit;
 // Encapsulates a thread routine with an argument
 class ThreadStarter
 {
-  Start_routine_f m_StartRoutine;
-  Start_routine_arg_t m_StartRoutineArg;
-  ThreadLimit* m_ThreadLimit;
+  const Start_routine_f m_StartRoutine;
+  const Start_routine_arg_t m_StartRoutineArg;
+  ThreadLimit* const m_ThreadLimit;
   void* MonitorThread();
 public:
   virtual ~ThreadStarter();
