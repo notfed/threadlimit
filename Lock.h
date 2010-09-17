@@ -1,6 +1,5 @@
 #ifndef LOCK_H
 #define LOCK_H
-#include "Semaphore.h"
 template <class T>
 class Lock
 {
