@@ -4,14 +4,12 @@
 #include "Mutex.h"
 class Cond
 {
-  pthread_cond_t* m_Cond;
-  const pthread_t m_Owner;
+  pthread_cond_t m_Cond;
 public:
-  virtual ~Cond();
+  ~Cond();
   Cond();
   int Wait(Mutex&);
   int Broadcast();
   int Signal();
-  operator pthread_cond_t* const();
 };
 #endif

@@ -7,15 +7,12 @@
 #include <queue>
 using namespace std;
 
-/*
 static Mutex console_lock;
 void debug(const char *str)
 {
     Lock<Mutex> guard(console_lock);
     cerr << str << endl;
 }
-*/
-#define debug(str) 
 
 //
 // ThreadStarter
