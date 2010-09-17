@@ -1,10 +1,18 @@
 #include "Thread.h"
 #include "ThreadLimit.h"
 #include "CallMemFun.h"
+#include "Mutex.h"
 #include "Lock.h"
 #include <iostream>
 #include <queue>
 using namespace std;
+
+static Mutex console_lock;
+void debug(const char *str)
+{
+    Lock<Mutex> guard(console_lock);
+    cerr << str << endl;
+}
 
 //
 // ThreadStarter
@@ -58,7 +66,7 @@ void* ThreadLimit::ThreadLimitLoop()
 
     // Wait for a thread to be queued
     if(empty)  {
-      cerr << "ThreadLimit: No threads are queued. Waiting for a thread to be queued." << endl;
+      debug("ThreadLimit: No threads are queued. Waiting for a thread to be queued.");
       m_AddEvent.Wait(); 
     }
     
@@ -68,13 +76,13 @@ void* ThreadLimit::ThreadLimitLoop()
 
     // Wait for an available thread slot
     if(available==0)  {
-      cerr << "ThreadLimit: Limit reached.  Waiting for a thread to finish." << endl;
+      debug("ThreadLimit: Limit reached.  Waiting for a thread to finish.");
       m_FinishEvent.Wait(); 
     }
 
     // Run the next thread
     {
-      cerr << "ThreadLimit: Executing next thread" << endl;
+      debug("ThreadLimit: Executing next thread");
       Lock<Mutex> guard(m_QueueLock);
       ThreadStarter nextThread = m_ThreadQueue.front();
       m_ThreadQueue.pop();
@@ -85,7 +93,7 @@ void* ThreadLimit::ThreadLimitLoop()
 }
 void ThreadLimit::SignalFinish()
 {
-      cerr << "ThreadLimit: A thread finished." << endl;
+      debug("ThreadLimit: A thread finished.");
       Lock<Mutex> guard(m_QueueLock);
       ++m_Available; m_FinishEvent.Signal();
 }
@@ -93,6 +101,6 @@ void ThreadLimit::Add(Start_routine_f start_routine, Start_routine_arg_t start_r
 {
     Lock<Mutex> guard(m_QueueLock);
     m_ThreadQueue.push(ThreadStarter(start_routine,start_routine_arg, this));
-    cerr << "ThreadLimit: Added a new thread." << endl;
+    debug("ThreadLimit: Added a new thread.");
     m_AddEvent.Signal();
 }
