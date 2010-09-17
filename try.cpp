@@ -1,11 +1,17 @@
 #include <iostream>
 #include "Thread.h"
+#include "Lock.h"
+#include "Semaphore.h"
 using namespace std;
+Mutex console_lock;
 void* thread_func(void* arg)
 {
   sleep(1);
   const char *ptr = (const char*)arg;
-  cerr << ptr;
+  {
+    Lock<Mutex> guard(console_lock);
+    cout << "Thread " << ptr << endl;;
+  }
   return 0;
 }
 int main()
