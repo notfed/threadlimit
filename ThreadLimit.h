@@ -24,11 +24,11 @@ class ThreadLimit
   const int m_Limit;
   int m_Available;
   Event m_AddEvent;
-  Event m_FinishEvent;
+  Event m_ThreadCompleteEvent;
   Mutex m_QueueLock;
   void (*finish_event)();
   std::queue<ThreadStarter> m_ThreadQueue;
-  void SignalFinish();
+  void SignalThreadCompleted();
   void* ThreadLimitLoop();
   Thread m_Thread;
   friend class ThreadStarter;

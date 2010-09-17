@@ -28,7 +28,7 @@ ThreadStarter::ThreadStarter(Start_routine_f start_routine,
 void* ThreadStarter::MonitorThread()
 {
     (*m_StartRoutine)(m_StartRoutineArg);
-    m_ThreadLimit->SignalFinish();
+    m_ThreadLimit->SignalThreadCompleted();
     return 0;
 }
 void ThreadStarter::Start()
@@ -77,7 +77,7 @@ void* ThreadLimit::ThreadLimitLoop()
     // Wait for an available thread slot
     if(available==0)  {
       debug("ThreadLimit: Limit reached.  Waiting for a thread to finish.");
-      m_FinishEvent.Wait(); 
+      m_ThreadCompleteEvent.Wait(); 
     }
 
     // Run the next thread
@@ -91,11 +91,11 @@ void* ThreadLimit::ThreadLimitLoop()
   }
   return 0;
 }
-void ThreadLimit::SignalFinish()
+void ThreadLimit::SignalThreadCompleted()
 {
-      debug("ThreadLimit: A thread finished.");
+      debug("ThreadLimit: A thread completed.");
       Lock<Mutex> guard(m_QueueLock);
-      ++m_Available; m_FinishEvent.Signal();
+      ++m_Available; m_ThreadCompleteEvent.Signal();
 }
 void ThreadLimit::Add(Start_routine_f start_routine, Start_routine_arg_t start_routine_arg)
 {
