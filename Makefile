@@ -1,7 +1,7 @@
 LD=g++ -lpthread -Wall
 CC=g++ -Wall
-try : try.o Thread.o Attr.o Semaphore.o Mutex.o MutexAttr.o Event.o Cond.o ThreadLimit.o
-	$(LD) -o try try.o Thread.o Attr.o Semaphore.o Mutex.o MutexAttr.o Event.o Cond.o ThreadLimit.o
+try : try.o Thread.o Attr.o Mutex.o MutexAttr.o Event.o Cond.o ThreadLimit.o
+	$(LD) -o try try.o Thread.o Attr.o Mutex.o MutexAttr.o Event.o Cond.o ThreadLimit.o
 helgrind-fast : try
 	valgrind --tool=helgrind ./try
 helgrind : try
@@ -20,8 +20,6 @@ Attr.o : Attr.cpp Attr.h
 	$(CC) -c Attr.cpp 
 Thread.o : Thread.cpp Thread.h
 	$(CC) -c Thread.cpp 
-Semaphore.o : Semaphore.cpp Semaphore.h
-	$(CC) -c Semaphore.cpp
 MutexAttr.o : MutexAttr.cpp MutexAttr.h
 	$(CC) -c MutexAttr.cpp
 Event.o : Event.cpp Event.h

@@ -1,7 +1,6 @@
 #include <iostream>
 #include "Thread.h"
 #include "Lock.h"
-#include "Semaphore.h"
 #include "ThreadLimit.h"
 using namespace std;
 Mutex console_lock;
