@@ -7,12 +7,15 @@
 #include <queue>
 using namespace std;
 
+/*
 static Mutex console_lock;
 void debug(const char *str)
 {
     Lock<Mutex> guard(console_lock);
     cerr << str << endl;
 }
+*/
+#define debug(x)
 
 //
 // ThreadStarter
@@ -46,6 +49,7 @@ ThreadStarter::~ThreadStarter()
 ThreadLimit::ThreadLimit(int limit)
   : m_Limit(limit),
     m_Available(limit),
+    m_Finished(false),
     m_Thread(&CallMemFun<ThreadLimit,&ThreadLimit::ThreadLimitLoop>,this)
 {
   m_Thread.Start();
@@ -54,25 +58,50 @@ ThreadLimit::~ThreadLimit()
 {
   m_Thread.Cancel();
 }
+void ThreadLimit::Finish()
+{
+    { Lock<Mutex> guard(m_FinishLock);
+      m_Finished = true; }
+    m_Thread.Join();
+}
+
+void ThreadLimit::WaitForThreads()
+{
+  int available;
+  for(;;)
+  {
+    // Safely fetch m_Available
+    { Lock<Mutex> guard(m_QueueLock); available = m_Available; }
+    // If everyone's done, exit
+    if(available == m_Limit) break;
+    // Otherwise, wait for a finish
+    m_ThreadCompleteEvent.Wait(); 
+  }
+}
 void* ThreadLimit::ThreadLimitLoop()
 {
   bool empty;
   int available;
+  bool finished;
   for(;;)
   {
     // Safely fetch queue size
-    { Lock<Mutex> guard(m_QueueLock);
-      empty = m_ThreadQueue.empty(); }
+    { Lock<Mutex> guard(m_QueueLock); empty = m_ThreadQueue.empty(); }
 
     // Wait for a thread to be queued
     if(empty)  {
+      { Lock<Mutex> guard(m_FinishLock); finished = m_Finished; }
+      if(finished) {
+        debug("ThreadLimit: Finished.  Waiting for all threads to complete.");
+        WaitForThreads();
+        break;
+      }
       debug("ThreadLimit: No threads are queued. Waiting for a thread to be queued.");
       m_AddEvent.Wait(); 
     }
     
     // Safely fetch m_Available
-    { Lock<Mutex> guard(m_QueueLock);
-      available = m_Available; }
+    { Lock<Mutex> guard(m_QueueLock); available = m_Available; }
 
     // Wait for an available thread slot
     if(available==0)  {

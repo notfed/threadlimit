@@ -23,18 +23,22 @@ class ThreadLimit
 {
   const int m_Limit;
   int m_Available;
+  bool m_Finished;
   Event m_AddEvent;
   Event m_ThreadCompleteEvent;
   Mutex m_QueueLock;
-  void (*finish_event)();
+  Mutex m_FinishLock;
+  Thread m_Thread;
   std::queue<ThreadStarter> m_ThreadQueue;
+  void (*finish_event)();
   void SignalThreadCompleted();
   void* ThreadLimitLoop();
-  Thread m_Thread;
+  void WaitForThreads();
   friend class ThreadStarter;
 public:
   virtual ~ThreadLimit();
   ThreadLimit(int limit);
   void Add(Start_routine_f,Start_routine_arg_t=0);
+  void Finish();
 };
 #endif

@@ -28,6 +28,6 @@ int main()
   pool.Add(thread_func,(void*)"H");
   pool.Add(thread_func,(void*)"I");
   pool.Add(thread_func,(void*)"J");
-  cin.get(); 
+  pool.Finish();
   return 0;
 }
