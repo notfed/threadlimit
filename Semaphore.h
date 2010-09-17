@@ -11,7 +11,4 @@ public:
   void lock();
   void unlock();
 };
-class Semaphore2 : public Semaphore
-{
-};
 #endif
