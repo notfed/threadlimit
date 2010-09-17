@@ -2,11 +2,11 @@
 #define THREAD_H
 #include <pthread.h>
 #include "Mutex.h"
+typedef void* (*Start_routine_f)(void*);
+typedef void* Start_routine_arg_t;
 class Thread
 {
 public:
-  typedef void* (*Start_routine_f)(void*);
-  typedef void* Start_routine_arg_t;
   Thread(Start_routine_f,Start_routine_arg_t);
   virtual ~Thread() { }
   void Start();
