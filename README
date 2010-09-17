@@ -1,0 +1,45 @@
+This project is meant to demonstrate the ThreadLimit class.  The point of this class is to limit the number of threads running at any given time.  Say you want to launch off 1000 threads, each with their own task.  This would cause a huge spike in CPU and memory usage--it would be wise to limit the number of threads running at any given time.  The ThreadLimit class was designed to help you do just that.
+
+
+ThreadLimit has three public methods:
+
+  ThreadLimit::ThreadLimit(int limit) 
+  ThreadLimit::Add(void (*start_routine)(void*), void *arg)
+  ThreadLimit::Finish()
+
+The constructor takes one argument: the maximum number of threads to run in parallel at any given time.
+To queue up a thread, use the Add method, which takes the same arguments as pthread_create. 
+To wait for all previously-added threads to finish, use the Finish method;
+
+
+For example, the following code will create a thread for the function "output_letter" 26 times, passing along a different letter of the alphabet for each thread, and wait for them all to finish. It uses a ThreadLimit with a limit of 5, so only up to 5 threads will ever run at once.
+
+  ThreadLimit pool(5);
+  pool.Add(output_letter,(void*)"A"); 
+  pool.Add(output_letter,(void*)"B");
+  pool.Add(output_letter,(void*)"C");
+  pool.Add(output_letter,(void*)"D");
+  pool.Add(output_letter,(void*)"E");
+  pool.Add(output_letter,(void*)"F");
+  pool.Add(output_letter,(void*)"G");
+  pool.Add(output_letter,(void*)"H");
+  pool.Add(output_letter,(void*)"I");
+  pool.Add(output_letter,(void*)"J");
+  pool.Add(output_letter,(void*)"K");
+  pool.Add(output_letter,(void*)"L");
+  pool.Add(output_letter,(void*)"M");
+  pool.Add(output_letter,(void*)"N");
+  pool.Add(output_letter,(void*)"O");
+  pool.Add(output_letter,(void*)"P");
+  pool.Add(output_letter,(void*)"Q");
+  pool.Add(output_letter,(void*)"R");
+  pool.Add(output_letter,(void*)"S");
+  pool.Add(output_letter,(void*)"T");
+  pool.Add(output_letter,(void*)"U");
+  pool.Add(output_letter,(void*)"V");
+  pool.Add(output_letter,(void*)"W");
+  pool.Add(output_letter,(void*)"X");
+  pool.Add(output_letter,(void*)"Y");
+  pool.Add(output_letter,(void*)"Z");
+  pool.Finish();
+
