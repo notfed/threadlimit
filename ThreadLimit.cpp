@@ -25,16 +25,16 @@ ThreadStarter::ThreadStarter(Start_routine_f start_routine,
     m_ThreadLimit(owner)
 {
 }
-void ThreadStarter::Start()
-{
-    Thread newThread(&CallMemFun<ThreadStarter,&ThreadStarter::MonitorThread>,this);
-    newThread.Start();
-}
 void* ThreadStarter::MonitorThread()
 {
     (*m_StartRoutine)(m_StartRoutineArg);
     m_ThreadLimit->SignalFinish();
     return 0;
+}
+void ThreadStarter::Start()
+{
+    Thread newThread(&CallMemFun<ThreadStarter,&ThreadStarter::MonitorThread>,this);
+    newThread.Start();
 }
 ThreadStarter::~ThreadStarter()
 {
