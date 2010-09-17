@@ -2,7 +2,6 @@
 #define THREADLIMIT_H 1
 #include "Thread.h"
 #include "Mutex.h"
-#include "Semaphore.h"
 #include "Event.h"
 #include <queue>
 class ThreadLimit;
