@@ -4,18 +4,22 @@
 #include "Mutex.h"
 class Thread
 {
-  pthread_t m_Thread;
-  void Exit(void*);
-  bool m_IsDone;
-  Mutex m_StateLock;
 public:
   typedef void* (*Start_routine_f)(void*);
   typedef void* Start_routine_arg_t;
   Thread(Start_routine_f,Start_routine_arg_t);
   virtual ~Thread() { }
+  void Start();
   int Cancel();
   int Kill(int);
   int Join();
   int Join(void**);
+private:
+  pthread_t m_Thread;
+  bool m_IsDone;
+  Start_routine_f m_StartRoutine;
+  Start_routine_arg_t m_StartRoutineArg;
+  void Exit(void*);
+  Mutex m_StateLock;
 };
 #endif
