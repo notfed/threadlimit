@@ -9,7 +9,7 @@ class Thread
 public:
   Thread(Start_routine_f,Start_routine_arg_t);
   virtual ~Thread() { }
-  void Start();
+  void Start(int state = PTHREAD_CREATE_JOINABLE);
   int Cancel();
   int Kill(int);
   int Join();

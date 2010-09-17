@@ -37,7 +37,7 @@ void* ThreadStarter::MonitorThread()
 void ThreadStarter::Start()
 {
     Thread newThread(&CallMemFun<ThreadStarter,&ThreadStarter::MonitorThread>,this);
-    newThread.Start();
+    newThread.Start(PTHREAD_CREATE_DETACHED);
 }
 ThreadStarter::~ThreadStarter()
 {

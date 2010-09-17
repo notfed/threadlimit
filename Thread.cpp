@@ -14,10 +14,10 @@ Thread::Thread(Start_routine_f start_routine, Start_routine_arg_t arg)
     m_StartRoutineArg(arg)
 {
 }
-void Thread::Start()
+void Thread::Start(int state)
 {
   Lock<Mutex> stateLock(m_StateLock);
-  Attr at(PTHREAD_CREATE_JOINABLE);
+  Attr at(state);
   if(pthread_create(&m_Thread, at, m_StartRoutine, m_StartRoutineArg)!=0) 
     throw std::runtime_error("pthread_create failed");
 }
