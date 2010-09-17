@@ -84,9 +84,9 @@ void* ThreadLimit::ThreadLimitLoop()
     {
       debug("ThreadLimit: Executing next thread");
       Lock<Mutex> guard(m_QueueLock);
-      ThreadStarter nextThread = m_ThreadQueue.front();
-      m_ThreadQueue.pop();
+      ThreadStarter& nextThread = m_ThreadQueue.front();
       --m_Available; nextThread.Start();
+      m_ThreadQueue.pop();
     }
   }
   return 0;
